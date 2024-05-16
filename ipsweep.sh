@@ -3,14 +3,14 @@
 # Function to display the help manual
 function display_help() {
     echo -e "\e[1mIP SWEEP MANUAL\e[0m"
-    echo
     echo "IP Sweep helps scan all IP addresses in a LAN."
     echo "Syntax:"
     echo "ipsweep <<IP Address>>"
     echo "For Example:"
     echo "ipsweep 192.168.1."
     echo "or"
-    echo "ipsweep 192.168.1”
+    echo "ipsweep 192.168.1"
+    echo
     echo "MAKE SURE TO ASK FOR PERMISSION. IT IS ILLEGAL IF PERMISSION WAS NOT GRANTED"
 }
 
@@ -18,7 +18,6 @@ function display_help() {
 function display_ip_info() {
     ip a
     echo "To scan other IPs, copy the first 3 octets of your IP. For example: 192.168.1"
-    echo "The IP is normally located in inet inside eth0”
     echo "Would you like to proceed to the next step? y[es] or n[o]"
     read proceed_answer
     if [[ $proceed_answer =~ ^[Yy][Ee][Ss]|[Yy]$ ]]; then
@@ -38,8 +37,7 @@ function run_ipsweep() {
         echo "Wrong Syntax"
         echo "No IP parameter was given"
         echo "Syntax Example:"
-        echo "ipsweep 192.168.1"
-        echo “or ipsweep”
+        echo "./ipsweep.sh 192.168.1"
         exit 1
     fi
 
@@ -106,7 +104,6 @@ function main_menu() {
     clear
     echo -e "\e[1;31mIP SWEEP\e[0m"
     echo
-    echo
     echo "Searching the digital wild for IP unicorns!"
     echo "Option 1: Scan your IP first to identify others' IP!"
     echo "Option 2: Scan others' IP Immediately!"
@@ -144,4 +141,3 @@ if [ $# -eq 0 ]; then
 else
     run_ipsweep "$1"
 fi
-

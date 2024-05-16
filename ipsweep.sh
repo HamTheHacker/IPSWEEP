@@ -5,10 +5,8 @@ function display_help() {
     echo -e "\e[1mIP SWEEP MANUAL\e[0m"
     echo "IP Sweep helps scan all IP addresses in a LAN."
     echo "Syntax:"
-    echo "ipsweep <<IP Address>>"
+    echo "ipsweep <IP Address>"
     echo "For Example:"
-    echo "ipsweep 192.168.1."
-    echo "or"
     echo "ipsweep 192.168.1"
     echo
     echo "MAKE SURE TO ASK FOR PERMISSION. IT IS ILLEGAL IF PERMISSION WAS NOT GRANTED"
@@ -37,7 +35,7 @@ function run_ipsweep() {
         echo "Wrong Syntax"
         echo "No IP parameter was given"
         echo "Syntax Example:"
-        echo "./ipsweep.sh 192.168.1"
+        echo "ipsweep 192.168.1"
         exit 1
     fi
 
@@ -46,8 +44,7 @@ function run_ipsweep() {
 
     # Run the ping sweep
     for ip in $(seq 1 254); do
-        # Corrected the ping command to properly extract the IP address
-        ping_output=$(ping -c 1 "$1.$ip" | grep "64 bytes from")
+        ping_output=$(ping -c 1 -W 1 "$1.$ip" | grep "64 bytes from")
         if [ ! -z "$ping_output" ]; then
             ip_address=$(echo "$ping_output" | cut -d " " -f 4 | tr -d ":")
             responsive_ips+=("$ip_address")
@@ -64,8 +61,7 @@ function run_ipsweep() {
     if [[ $answer =~ ^[Yy][Ee][Ss]|[Yy]$ ]]; then
         echo "Please name the text file:"
         read filename
-        # Ensure the file is created and written to
-        touch "$filename"
+        touch "$filename" # Ensure the file exists
         for ip in "${responsive_ips[@]}"; do
             echo "$ip" >> "$filename"
         done
@@ -80,14 +76,12 @@ function run_ipsweep() {
 
     # Handle the user's decision to use nmap
     if [[ $nmap_answer =~ ^[Yy][Ee][Ss]|[Yy]$ ]]; then
-        # Correctly construct the nmap command with the IPs
         nmap_command="nmap -sV ${responsive_ips[*]}"
         echo "The nmap command line is:"
         echo "$nmap_command"
         echo "Would you like to execute this command line or paste it manually? e[xecute] or m[anual scan]"
         read execute_answer
         if [[ $execute_answer =~ ^[Xx][Ee][Cc][Uu][Tt][Ee]|[Xx]$ ]]; then
-            # Execute the nmap command
             eval "$nmap_command"
         else
             echo "Please paste the command manually to execute the nmap scan."
